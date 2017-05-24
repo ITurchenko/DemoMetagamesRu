@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "iturchenko.demometagamesru"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,4 +27,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+
+    /** Data parsing */
+    compile 'org.jsoup:jsoup:1.10.2'
 }
