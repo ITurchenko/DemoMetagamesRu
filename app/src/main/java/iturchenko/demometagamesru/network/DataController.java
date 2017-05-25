@@ -1,7 +1,6 @@
 package iturchenko.demometagamesru.network;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import iturchenko.demometagamesru.model.GameCard;
 
@@ -21,18 +19,8 @@ public class DataController {
     public Single<List<GameCard>> getPcUpcomingRx() {
         return Single.just(1)
                 .observeOn(Schedulers.single())
-                .map(new Function<Integer, Document>() {
-                    @Override
-                    public Document apply(Integer integer) throws Exception {
-                        return Jsoup.connect(NetworkConst.PC_UPCOMING).get();
-                    }
-                })
-                .map(new Function<Document, List<GameCard>>() {
-                    @Override
-                    public List<GameCard> apply(Document document) throws Exception {
-                        return parseDoc(document);
-                    }
-                });
+                .map(integer -> Jsoup.connect(NetworkConst.PC_UPCOMING).get())
+                .map(document -> parseDoc(document));
     }
 
     @NonNull
