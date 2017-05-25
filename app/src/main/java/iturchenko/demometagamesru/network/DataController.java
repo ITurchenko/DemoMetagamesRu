@@ -1,6 +1,7 @@
 package iturchenko.demometagamesru.network;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -9,8 +10,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import iturchenko.demometagamesru.model.GameCard;
 
 public class DataController {
@@ -20,7 +27,32 @@ public class DataController {
         new NetworkTask(NetworkConst.PC_UPCOMING).execute();
     }
 
+    public Single<List<GameCard>> getPcUpcomingRx() {
+        return Single.just(1)
+                .observeOn(Schedulers.single())
+                .map(new Function<Integer, List<GameCard>>() {
+                    @Override
+                    public List<GameCard> apply(Integer integer) throws Exception {
+                        try {
+                            Document document = Jsoup.connect(NetworkConst.PC_UPCOMING).get();
+                            return parseDoc(document);
+                        } catch (Exception e) {
+                            Log.e("DataController","Error",e);
+                        }
+
+                        return Collections.emptyList();
+                    }
+                });
+    }
+
     private void onDocumentLoaded(Document doc) {
+        List<GameCard> gameCards = parseDoc(doc);
+
+        if (dataLoadedListener != null) dataLoadedListener.onDataLoaded(gameCards);
+    }
+
+    @NonNull
+    private List<GameCard> parseDoc(Document doc) {
         Elements sections = doc.select("section.b-games-block__group");
         Log.e("AA","> "+sections.size());
 
@@ -47,8 +79,7 @@ public class DataController {
                 gameCards.add(gameCard);
             }
         }
-
-        if (dataLoadedListener != null) dataLoadedListener.onDataLoaded(gameCards);
+        return gameCards;
     }
 
     public void setDataLoadedListener(DataLoadedListener dataLoadedListener) {
