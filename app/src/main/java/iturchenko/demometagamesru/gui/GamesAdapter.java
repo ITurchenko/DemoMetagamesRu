@@ -8,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,13 @@ import iturchenko.demometagamesru.network.NetworkConst;
 
 class GamesAdapter extends BaseAdapter {
     private final LayoutInflater inflater;
-    private final Picasso picasso;
+    private final RequestManager glide;
     private List<GameCard> cards = new ArrayList<>();
 
     public GamesAdapter(Context context) {
         inflater = LayoutInflater.from(context);
-        picasso = Picasso.with(context);
+
+        glide = Glide.with(context);
     }
 
     @Override
@@ -54,9 +56,7 @@ class GamesAdapter extends BaseAdapter {
         ((TextView)view.findViewById(R.id.tv_genre)).setText(card.genre);
         ((TextView)view.findViewById(R.id.tv_release)).setText(card.releaseData);
 
-        picasso.load(NetworkConst.BASIC_URL+card.image)
-                .centerCrop()
-                .fit()
+        glide.load(NetworkConst.BASIC_URL+card.image)
                 .into((ImageView) view.findViewById(R.id.image));
 
         return view;
