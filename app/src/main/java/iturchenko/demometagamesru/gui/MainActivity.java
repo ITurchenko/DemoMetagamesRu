@@ -1,14 +1,13 @@
 package iturchenko.demometagamesru.gui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import iturchenko.demometagamesru.R;
 import iturchenko.demometagamesru.model.GameCard;
@@ -36,6 +35,12 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void accept(List<GameCard> cards) throws Exception {
                         gamesAdapter.setData(cards);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("AA","Inner error", throwable);
+                        Toast.makeText(getApplicationContext(), "Something gone wrong, we sorry", Toast.LENGTH_SHORT).show();
                     }
                 }));
     }
